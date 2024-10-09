@@ -5,7 +5,6 @@ from django.shortcuts import render
 from .forms import PDFUploadForm
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
-#from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_groq import ChatGroq
 
@@ -14,16 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 
-#API_KEY = os.getenv("GOOGLE_API_KEY", "AIzaSyD9j5NtmymmcwtE59M6HrmGqWfohVrQ1BU")
 
-# llm = ChatGoogleGenerativeAI(
-#     model="gemini-1.5-pro",
-#     temperature=0.2,
-#     max_tokens=None,
-#     timeout=None,
-#     max_retries=2,
-#     api_key=API_KEY
-# )
 llm = ChatGroq(
     temperature=0, 
     groq_api_key='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', 
