@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Chatbot</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #b0dad7;
+        }
+        .container {
+            max-width: 1300px; /* Wider container */
+            margin: 0 auto; /* Center the container */
+        }
+        .chat-container {
+            display: flex;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            height: 600px;
+        }
+        .pdf-upload {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            border-right: 1px solid #ccc;
+            justify-content: center;
+            max-width: 350px;
+        }
+        .chat-area {
+            flex: 2;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            min-height: 460px;
+            max-height: 460px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+        .user-message {
+            align-self: flex-end; /* Align user messages to the right */
+            margin: 10px 0;
+            background-color: #cfe2ff; /* Light blue for user messages */
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block; /* Makes the background wrap around the text */
+            max-width: 70%; /* Limit the width */
+        }
+        .bot-message {
+            align-self: flex-start; /* Align bot messages to the left */
+            margin: 10px 0;
+            background-color: #d1e7dd; /* Light green for bot messages */
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block; /* Makes the background wrap around the text */
+            max-width: 70%; /* Limit the width */
+        }
+        .user-message:hover, .bot-message:hover {
+            transform: scale(1.01); /* Slightly enlarge on hover */
+        }
+        .input-group input {
+            border-radius: 20px;
+        }
+        .btn {
+            border-radius: 20px;
+        }
+        .uploaded-file {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #007bff;
+            background-color: #e7f1ff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center" style="font-weight: bold; margin-top: 20px;">PDF Insight Explorer</h2>
+        <div class="chat-container">
+            <div class="pdf-upload">
+                <h4 style="margin-top: 100px;">Upload Your PDF</h4><br>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.pdf_file.label }}
+                        {{ form.pdf_file }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                </form>
+
+                {% if uploaded_file_name %}
+                    <div class="uploaded-file">
+                        <strong>Uploaded PDF:</strong> {{ uploaded_file_name }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="chat-area">
+                <h4>Chat About Your PDF <span style="font-size: 24px; margin-right: 8px;">📄</span></h4>
+                <div class="conversation">
+                    {% for item in conversation %}
+                        <div class="user-message">
+                            <strong>You:</strong> {{ item.question }}
+                        </div>
+                        <div class="bot-message">
+                            <strong>Bot:</strong> {{ item.response }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <form method="post" class="mb-3">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="question" class="form-control" placeholder="Ask a question..." required>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-success" style="background-color: #82c4a6;"><i class="fas fa-paper-plane"></i> Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to scroll to the bottom of the chat area
+        function scrollToBottom() {
+            var chatArea = document.querySelector('.conversation');
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // Call scrollToBottom after the page loads
+        window.onload = scrollToBottom;
+
+        // Also call it after form submission
+        document.querySelector('form').addEventListener('submit', function() {
+            setTimeout(scrollToBottom, 100); // Delay to allow for new content to load
+        });
+    </script>
+</body>
+</html>
